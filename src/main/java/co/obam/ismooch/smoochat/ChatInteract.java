@@ -1,9 +1,12 @@
 package co.obam.ismooch.smoochat;
 
+import co.obam.ismooch.obamapi.ObamAPI;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 public class ChatInteract {
 
@@ -18,6 +21,8 @@ public class ChatInteract {
     public static HashSet<Player> mechanicChannel = new HashSet<Player>();
     public static HashSet<Player> chatOffPlayers = new HashSet<Player>();
     public static HashMap<Player, String> privateChannel = new HashMap<Player, String>();
+    public static List<UUID> adminList = new ArrayList<UUID>();
+    public static List<UUID> ssList = new ArrayList<UUID>();
 
 
     //This method adds a specified player to all channels their permissions allow
@@ -50,7 +55,7 @@ public class ChatInteract {
         globalChannel.add(player);
 
 		/*
-		 * TODO Add a 'Game' channel for use in game instances that does not go cross server
+         * TODO Add a 'Game' channel for use in game instances that does not go cross server
 		 * and handles additional arguments of which game they are in so only the appropriate users
 		 * see them
 		 */
@@ -59,7 +64,7 @@ public class ChatInteract {
     }
 
     //This method adds a specified player to the specified channel with permission checks
-	/*
+    /*
 	 * TODO ?? If use seems needed, add a method that adds a player to a channel regardless of permission for 
 	 * admin pushing/pulling ??
 	 */
@@ -195,6 +200,52 @@ public class ChatInteract {
         } else {
 
             return null;
+        }
+
+    }
+
+    public static void updateAdminList() {
+
+        ObamAPI.openConnection();
+        try {
+
+            PreparedStatement sql = ObamAPI.connection.prepareStatement("SELECT * FROM cPerms WHERE Rank = 'Admin'");
+            ResultSet rs = sql.executeQuery();
+            adminList.clear();
+            while (rs.next()) {
+
+                adminList.add(UUID.fromString(rs.getString("UUID")));
+
+            }
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        } finally {
+            ObamAPI.closeConnection();
+        }
+
+    }
+
+    public static void updateSSList() {
+
+        ObamAPI.openConnection();
+        try {
+
+            PreparedStatement sql =
+                    ObamAPI.connection.prepareStatement("SELECT * FROM cPerms WHERE Rank = 'SuperStaff'");
+            ResultSet rs = sql.executeQuery();
+            ssList.clear();
+            while (rs.next()) {
+
+                ssList.add(UUID.fromString(rs.getString("UUID")));
+
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        } finally {
+            ObamAPI.closeConnection();
         }
 
     }

@@ -27,6 +27,12 @@ public class Badges implements Listener {
 
         UUID uuid = e.getPlayer().getUniqueId();
 
+        if (!isBadgeFound(uuid)) {
+
+            newBadgeEnter(uuid);
+
+        }
+
         ObamAPI.openConnection();
         try {
             PreparedStatement sql = ObamAPI.connection.prepareStatement("SELECT * FROM Badges WHERE UUID = ?");
@@ -38,12 +44,16 @@ public class Badges implements Listener {
 
                 if (!Badges.containsKey(e.getPlayer().getUniqueId())) {
 
-                    Badges.put(e.getPlayer().getUniqueId(), rs.getString("Active"));
+                    if (rs.getString("Active") != null) {
+                        Badges.put(e.getPlayer().getUniqueId(), rs.getString("Active"));
+                    }
 
                 } else {
 
-                    Badges.remove(e.getPlayer().getUniqueId());
-                    Badges.put(e.getPlayer().getUniqueId(), rs.getString("Active"));
+                    if (rs.getString("Active") != null) {
+                        Badges.remove(e.getPlayer().getUniqueId());
+                        Badges.put(e.getPlayer().getUniqueId(), rs.getString("Active"));
+                    }
 
                 }
 
@@ -80,9 +90,11 @@ public class Badges implements Listener {
 
             PreparedStatement sql = ObamAPI.connection.prepareStatement("SELECT * FROM BadgeList");
             ResultSet rs = sql.executeQuery();
-            if (rs.next()) {
+            badgeMap.clear();
+            badgeList.clear();
+            while (rs.next()) {
 
-                badgeMap.put(rs.getString("BadgeName"), rs.getString("BadgeValue"));
+                badgeMap.put(rs.getString("BadgeName"), rs.getString("Value"));
                 badgeList.add(rs.getString("BadgeName"));
 
             }
@@ -212,6 +224,54 @@ public class Badges implements Listener {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+
+            ObamAPI.closeConnection();
+
+        }
+
+    }
+
+    public static boolean isBadgeFound(UUID uuid) {
+
+        ObamAPI.openConnection();
+        try {
+
+            PreparedStatement sql = ObamAPI.connection.prepareStatement("SELECT * FROM Badges WHERE UUID = ?");
+
+            sql.setString(1, uuid.toString());
+            ResultSet rs = sql.executeQuery();
+            return rs.next();
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            ObamAPI.closeConnection();
+
+        }
+
+        return false;
+    }
+
+    public static void newBadgeEnter(UUID uuid) {
+
+        ObamAPI.openConnection();
+        try {
+
+            PreparedStatement sql =
+                    ObamAPI.connection.prepareStatement("INSERT INTO Badges (UUID, Active) VALUES (?, NULL)");
+
+            sql.setString(1, uuid.toString());
+            sql.executeUpdate();
+
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
         } finally {
 
             ObamAPI.closeConnection();

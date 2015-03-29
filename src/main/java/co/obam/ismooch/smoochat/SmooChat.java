@@ -48,6 +48,8 @@ public class SmooChat extends JavaPlugin implements Listener {
         Badges.badgeDefine();
 
         //grabbing config values
+        ChatInteract.updateAdminList();
+        ChatInteract.updateSSList();
 
 
         //server prefix
@@ -112,7 +114,7 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                         if (Badges.hasBadge(player.getUniqueId(), badge)) {
 
-                            player.sendRawMessage(ChatColor.YELLOW + badge + ChatColor.GREEN + ": " +
+                            player.sendRawMessage(ChatColor.GREEN + badge + ChatColor.GREEN + ": " +
                                     ChatColor.translateAlternateColorCodes('&', Badges.badgeMap.get(badge)));
 
                         } else {
@@ -129,6 +131,15 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                     player.sendRawMessage(ChatColor.RED + "You must specify a badge to set!");
                     return true;
+
+                } else if (args.length < 2 && args[0].equalsIgnoreCase("off")) {
+
+                    Badges.activeBadgeSet(player.getUniqueId(), null);
+                    Badges.updatePlayerBadge(player.getUniqueId());
+                    player.sendRawMessage(ChatColor.GREEN +
+                            "You have deactivated your badge! To re-enable just set your badge to an available option.");
+                    return true;
+
 
                 } else if (args.length < 3 && args[0].equalsIgnoreCase("set")) {
 
@@ -163,10 +174,12 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                         player.sendRawMessage(
                                 ChatColor.RED + "You must specify an action, a badge name, and a player name!");
+                        return true;
 
                     } else {
 
                         player.sendRawMessage(ChatColor.RED + "You do not have permission to do this!");
+                        return true;
                     }
 
                 } else if (args.length < 5 && args[0].equalsIgnoreCase("admin")) {
@@ -217,7 +230,7 @@ public class SmooChat extends JavaPlugin implements Listener {
                                 return true;
                             }
 
-                        }else if (args[1].equalsIgnoreCase("give")) {
+                        } else if (args[1].equalsIgnoreCase("give")) {
 
 
                             if (!Badges.badgeList.contains(args[2])) {
@@ -237,18 +250,21 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                             }
 
-                        }else if(args[1].equalsIgnoreCase("remove")){
+                        } else if (args[1].equalsIgnoreCase("remove")) {
 
 
-                            if(!Badges.badgeList.contains(args[2])){
+                            if (!Badges.badgeList.contains(args[2])) {
 
-                                player.sendRawMessage(ChatColor.YELLOW + args[2] + ChatColor.RED + " is not a registered badge!");
+                                player.sendRawMessage(
+                                        ChatColor.YELLOW + args[2] + ChatColor.RED + " is not a registered badge!");
                                 return true;
 
-                            }else {
+                            } else {
 
                                 Badges.badgeRemove(uuid, args[2]);
-                                player.sendRawMessage(ChatColor.YELLOW + args[3] + ChatColor.GREEN + " now no longer has access to the " + ChatColor.YELLOW + args[2] + ChatColor.GREEN + " badge.");
+                                player.sendRawMessage(ChatColor.YELLOW + args[3] + ChatColor.GREEN +
+                                        " now no longer has access to the " + ChatColor.YELLOW + args[2] +
+                                        ChatColor.GREEN + " badge.");
                                 return true;
                             }
 
@@ -256,11 +272,10 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                     }
 
-                }else if(args.length < 2 && args[0].equalsIgnoreCase("reload")){
+                } else if (args.length < 2 && args[0].equalsIgnoreCase("reload")) {
 
 
-
-                    if(!player.hasPermission("obam.smod")){
+                    if (!player.hasPermission("obam.smod")) {
 
                         player.sendRawMessage(ChatColor.RED + "You do not have permission to do this!");
                         return true;
@@ -279,74 +294,79 @@ public class SmooChat extends JavaPlugin implements Listener {
                 Player player = (Player) sender;
                 if (args.length < 1) {
 
-                    sender.sendMessage(ChatColor.RED + "You must specify a player!");
-                    return true;
-
-                } else if (Bukkit.getPlayer(args[0]) != null) {
-
-                    if (args.length < 2) {
-
-                        if (!ObamAPI.isOBAMPlayer(args[0])) {
-
-                            player.sendRawMessage(
-                                    ChatColor.YELLOW + args[0] + ChatColor.RED + " is not a registered OBAM player!");
-                            return true;
-
-                        }
-                        Player target = Bukkit.getPlayer(args[0]);
-                        if (Bukkit.getPlayer(args[0]) != null) {
-                            ChatInteract.setPrivate(player, target.getName());
-                            player.sendMessage(
-                                    ChatColor.GREEN + "You are now in a conversation with " + ChatColor.YELLOW +
-                                            target.getName());
-                            return true;
-
-                        } else {
-
-                            ChatInteract.setPrivate(player, args[0]);
-                            player.sendMessage(
-                                    ChatColor.GREEN + "You are now in a conversation with " + ChatColor.YELLOW +
-                                            args[0]);
-
-                            return true;
-
-
-                        }
-
+                    if (!ChatInteract.checkPrivate(player)) {
+                        sender.sendMessage(ChatColor.RED + "You must specify a player!");
+                        return true;
                     } else {
 
-                        String message = StringUtils.join(args, ' ', 1, args.length);
-                        Player target = Bukkit.getPlayer(args[0]);
-                        String sendMessage = String.valueOf(
+                        ChatInteract.removePrivate(player);
+                        player.sendRawMessage(ChatColor.GREEN + "You are no longer in a conversation!");
+                        return true;
+
+                    }
+
+
+                }
+
+                if (args.length < 2) {
+
+                    if (!ObamAPI.isOBAMPlayer(args[0])) {
+
+                        player.sendRawMessage(
+                                ChatColor.YELLOW + args[0] + ChatColor.RED + " is not a registered OBAM player!");
+                        return true;
+
+                    }
+                    Player target = Bukkit.getPlayer(args[0]);
+                    if (Bukkit.getPlayer(args[0]) != null) {
+                        ChatInteract.setPrivate(player, target.getName());
+                        player.sendMessage(
+                                ChatColor.GREEN + "You are now in a conversation with " + ChatColor.YELLOW +
+                                        target.getName());
+                        return true;
+
+                    }
+
+                    ChatInteract.setPrivate(player, args[0]);
+                    player.sendMessage(
+                            ChatColor.GREEN + "You are now in a conversation with " + ChatColor.YELLOW +
+                                    args[0]);
+
+                    return true;
+
+
+                } else {
+
+                    String message = StringUtils.join(args, ' ', 1, args.length);
+                    Player target = Bukkit.getPlayer(args[0]);
+                    String sendMessage = String.valueOf(
+                            ChatColor.DARK_PURPLE + "❝ " + ChatColor.LIGHT_PURPLE + sender.getName() + " ➽ " +
+                                    args[0] + ": " + ChatColor.GRAY + message + ChatColor.BOLD +
+                                    ChatColor.DARK_PURPLE + " ❞");
+                    if (Bukkit.getPlayer(args[0]) != null) {
+
+                        sender.sendMessage(
                                 ChatColor.DARK_PURPLE + "❝ " + ChatColor.LIGHT_PURPLE + sender.getName() + " ➽ " +
-                                        args[0] + ": " + ChatColor.GRAY + message + ChatColor.BOLD +
+                                        target.getName() + ": " + ChatColor.GRAY + message + ChatColor.BOLD +
                                         ChatColor.DARK_PURPLE + " ❞");
-                        if (Bukkit.getPlayer(args[0]) != null) {
+                        target.sendMessage(
+                                ChatColor.DARK_PURPLE + "❝ " + ChatColor.LIGHT_PURPLE + sender.getName() + " ➽ " +
+                                        target.getName() + ": " + ChatColor.GRAY + message + ChatColor.BOLD +
+                                        ChatColor.DARK_PURPLE + " ❞");
 
-                            sender.sendMessage(
-                                    ChatColor.DARK_PURPLE + "❝ " + ChatColor.LIGHT_PURPLE + sender.getName() + " ➽ " +
-                                            target.getName() + ": " + ChatColor.GRAY + message + ChatColor.BOLD +
-                                            ChatColor.DARK_PURPLE + " ❞");
-                            target.sendMessage(
-                                    ChatColor.DARK_PURPLE + "❝ " + ChatColor.LIGHT_PURPLE + sender.getName() + " ➽ " +
-                                            target.getName() + ": " + ChatColor.GRAY + message + ChatColor.BOLD +
-                                            ChatColor.DARK_PURPLE + " ❞");
-
-                            ChatLogger.logPM(player.getUniqueId(), ObamAPI.getUUID(args[0]), serverName, message);
-                            return true;
-                        } else {
+                        ChatLogger.logPM(player.getUniqueId(), ObamAPI.getUUID(args[0]).toString(), serverName, message);
+                        return true;
+                    }
 
 
-                            try {
-                                BungeeMessenger.sendCSPM(args[0], sendMessage);
-                                ChatLogger.logPM(player.getUniqueId(), ObamAPI.getUUID(args[0]), serverName, message);
+                    try {
+                        BungeeMessenger.sendCSPM(args[0], sendMessage);
+                        ChatLogger.logPM(player.getUniqueId(), ObamAPI.getUUID(args[0]).toString(), serverName, message);
+                        ((Player) sender).sendRawMessage(sendMessage);
+                        return true;
 
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
 
@@ -354,252 +374,151 @@ public class SmooChat extends JavaPlugin implements Listener {
 
 
             }
-            if (cmd.getName().equalsIgnoreCase("chat")) {
 
 
-                Player player = (Player) sender;
-
-                if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
-
-                    if (args.length < 2 || args[1].equalsIgnoreCase("1")) {
-
-                        player.sendRawMessage(" ");
-                        player.sendMessage(ChatColor.DARK_AQUA + "SmooChat (v 3.0) - Help - Page 1 / 2");
-                        player.sendMessage(ChatColor.GRAY + "SmooChat is the global chat system for OBAMCraft");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/chat");
-                        player.sendMessage(ChatColor.WHITE + "This command opens this help menu");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/chat help [<number>]");
-                        player.sendMessage(
-                                ChatColor.WHITE +
-                                        "Opens the help menu. If a number is specified, it lists that page.");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/chat join <channel name>");
-                        player.sendMessage(
-                                ChatColor.WHITE + "Let's you join the specified channel if you have permission");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/chat leave <channel name>");
-                        player.sendMessage(
-                                ChatColor.WHITE + "Let's you leave the specified channel if you are in it");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/chat <channel name>");
-                        player.sendMessage(ChatColor.WHITE + "Sets current active channel to specified channel");
-                        player.sendMessage("");
+        }
+        if (cmd.getName().equalsIgnoreCase("chat")) {
 
 
-                    } else if (args[1].equalsIgnoreCase("2")) {
+            Player player = (Player) sender;
 
-                        player.sendRawMessage(" ");
-                        player.sendMessage(ChatColor.DARK_AQUA + "SmooChat (v 3.0) - Help - Page 2 / 2");
-                        player.sendMessage(ChatColor.GRAY + "SmooChat is the global chat system for OBAMCraft");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/pm <player name>");
-                        player.sendMessage(ChatColor.WHITE + "Starts a PM session with the specified player");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/pm <player name> <message>");
-                        player.sendMessage(ChatColor.WHITE + "Sends a single PM to the specified player.");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/reply");
-                        player.sendMessage(
-                                ChatColor.WHITE + "Begins a PM session with the last person to send a PM to you.");
-                        player.sendMessage("");
-                        player.sendMessage(ChatColor.GOLD + "/reply <message>");
-                        player.sendMessage(
-                                ChatColor.WHITE + "Sends a single message to the last person to send a PM to you.");
-                        player.sendMessage("");
+            if (args.length < 1 || args[0].equalsIgnoreCase("help")) {
 
+                if (args.length < 2 || args[1].equalsIgnoreCase("1")) {
 
-                    } else {
-
-                        player.sendMessage(ChatColor.RED + "There are no other help pages!");
-
-                    }
-
-                } else if (args[0].equalsIgnoreCase("staff") || args[0].equalsIgnoreCase("mod") ||
-                        args[0].equalsIgnoreCase("m")) {
-
-                    playerChannel.put(player.getName(), "staff");
+                    player.sendRawMessage(" ");
+                    player.sendMessage(ChatColor.DARK_AQUA + "SmooChat (v 3.0) - Help - Page 1 / 2");
+                    player.sendMessage(ChatColor.GRAY + "SmooChat is the global chat system for OBAMCraft");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/chat");
+                    player.sendMessage(ChatColor.WHITE + "This command opens this help menu");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/chat help [<number>]");
                     player.sendMessage(
-                            ChatColor.YELLOW + "You are now talking in the " + ChatColor.GREEN + "Moderator" +
-                                    ChatColor.YELLOW + " channel.");
-
-                } else if (args[0].equalsIgnoreCase("supporter") || args[0].equalsIgnoreCase("s")) {
-
-                    playerChannel.put(player.getName(), "supporter");
+                            ChatColor.WHITE +
+                                    "Opens the help menu. If a number is specified, it lists that page.");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/chat join <channel name>");
                     player.sendMessage(
-                            ChatColor.YELLOW + "You are now talking in the " + ChatColor.BLUE + "Supporter " +
-                                    ChatColor.YELLOW + "channel.");
-
-                } else if (args[0].equalsIgnoreCase("mech") || args[0].equalsIgnoreCase("mechanic")) {
-
-                    playerChannel.put(player.getName(), "mechanic");
+                            ChatColor.WHITE + "Let's you join the specified channel if you have permission");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/chat leave <channel name>");
                     player.sendMessage(
-                            ChatColor.YELLOW + "You are now talking in the " + ChatColor.GOLD + "Mechanic " +
-                                    ChatColor.YELLOW + "channel.");
+                            ChatColor.WHITE + "Let's you leave the specified channel if you are in it");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/chat <channel name>");
+                    player.sendMessage(ChatColor.WHITE + "Sets current active channel to specified channel");
+                    player.sendMessage("");
 
-                } else if (args[0].equalsIgnoreCase("global") || args[0].equalsIgnoreCase("g")) {
 
-                    playerChannel.put(player.getName(), "global");
+                } else if (args[1].equalsIgnoreCase("2")) {
+
+                    player.sendRawMessage(" ");
+                    player.sendMessage(ChatColor.DARK_AQUA + "SmooChat (v 3.0) - Help - Page 2 / 2");
+                    player.sendMessage(ChatColor.GRAY + "SmooChat is the global chat system for OBAMCraft");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/pm <player name>");
+                    player.sendMessage(ChatColor.WHITE + "Starts a PM session with the specified player");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/pm <player name> <message>");
+                    player.sendMessage(ChatColor.WHITE + "Sends a single PM to the specified player.");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/reply");
                     player.sendMessage(
-                            ChatColor.YELLOW + "You are now talking in the " + ChatColor.WHITE + "Global " +
-                                    ChatColor.YELLOW + "channel.");
+                            ChatColor.WHITE + "Begins a PM session with the last person to send a PM to you.");
+                    player.sendMessage("");
+                    player.sendMessage(ChatColor.GOLD + "/reply <message>");
+                    player.sendMessage(
+                            ChatColor.WHITE + "Sends a single message to the last person to send a PM to you.");
+                    player.sendMessage("");
 
-                } else if (args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("j")) {
 
-                    if (args.length < 2) {
+                } else {
 
-                        player.sendMessage(ChatColor.RED + "You must specify a channel name!");
+                    player.sendMessage(ChatColor.RED + "There are no other help pages!");
 
-                    } else {
+                }
 
-                        String channel = args[1];
+            } else if (args[0].equalsIgnoreCase("staff") || args[0].equalsIgnoreCase("mod") ||
+                    args[0].equalsIgnoreCase("m")) {
 
-                        if (channel.equalsIgnoreCase("moderator") || channel.equalsIgnoreCase("m") ||
-                                channel.equalsIgnoreCase("staff")) {
+                playerChannel.put(player.getName(), "staff");
+                player.sendMessage(
+                        ChatColor.YELLOW + "You are now talking in the " + ChatColor.GREEN + "Moderator" +
+                                ChatColor.YELLOW + " channel.");
 
-                            if (!player.hasPermission("obam.mod")) {
+            } else if (args[0].equalsIgnoreCase("supporter") || args[0].equalsIgnoreCase("s")) {
 
-                                player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                playerChannel.put(player.getName(), "supporter");
+                player.sendMessage(
+                        ChatColor.YELLOW + "You are now talking in the " + ChatColor.BLUE + "Supporter " +
+                                ChatColor.YELLOW + "channel.");
 
-                            } else {
+            } else if (args[0].equalsIgnoreCase("mech") || args[0].equalsIgnoreCase("mechanic")) {
 
-                                ChatInteract.addToChannel("staff", player);
-                                player.sendMessage(
-                                        ChatColor.YELLOW + "You have joined the " + ChatColor.GREEN + "Moderator " +
-                                                ChatColor.YELLOW + "channel.");
-                                playerChannel.put(player.getName(), "staff");
+                playerChannel.put(player.getName(), "mechanic");
+                player.sendMessage(
+                        ChatColor.YELLOW + "You are now talking in the " + ChatColor.GOLD + "Mechanic " +
+                                ChatColor.YELLOW + "channel.");
 
-                            }
-                        } else if (channel.equalsIgnoreCase("supporter") || channel.equalsIgnoreCase("s")) {
+            } else if (args[0].equalsIgnoreCase("global") || args[0].equalsIgnoreCase("g")) {
 
-                            if (player.hasPermission("obam.ult4") || player.hasPermission("obam.plus2") ||
-                                    player.hasPermission("obam.supp1") || player.hasPermission("obam.supporter")) {
+                playerChannel.put(player.getName(), "global");
+                player.sendMessage(
+                        ChatColor.YELLOW + "You are now talking in the " + ChatColor.WHITE + "Global " +
+                                ChatColor.YELLOW + "channel.");
 
-                                ChatInteract.addToChannel("supporter", player);
-                                player.sendMessage(
-                                        ChatColor.YELLOW + "You have joined the " + ChatColor.BLUE + "Supporter " +
-                                                ChatColor.YELLOW + "channel");
-                                playerChannel.put(player.getName(), "supporter");
+            } else if (args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("j")) {
 
-                            } else {
+                if (args.length < 2) {
 
-                                player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                    player.sendMessage(ChatColor.RED + "You must specify a channel name!");
 
-                            }
-                        } else if (channel.equalsIgnoreCase("mechanic") || channel.equalsIgnoreCase("mech")) {
+                } else {
 
-                            if (player.hasPermission("obam.mechanic")) {
+                    String channel = args[1];
 
-                                ChatInteract.addToChannel("mechanic", player);
-                                player.sendMessage(
-                                        ChatColor.YELLOW + "You have joined the " + ChatColor.GOLD + "Mechanic " +
-                                                ChatColor.YELLOW + "channel.");
-                                playerChannel.put(player.getName(), "mechanic");
+                    if (channel.equalsIgnoreCase("moderator") || channel.equalsIgnoreCase("m") ||
+                            channel.equalsIgnoreCase("staff")) {
 
-                            } else {
+                        if (!player.hasPermission("obam.mod")) {
 
-                                player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
-
-                            }
-
-                        } else if (channel.equalsIgnoreCase("global") || channel.equalsIgnoreCase("g")) {
-
-                            ChatInteract.addToChannel("global", player);
-                            player.sendMessage(
-                                    ChatColor.YELLOW + "You have joined the " + ChatColor.WHITE + "Global " +
-                                            ChatColor.YELLOW + "channel.");
-                            playerChannel.put(player.getName(), "global");
+                            player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
 
                         } else {
 
+                            ChatInteract.addToChannel("staff", player);
                             player.sendMessage(
-                                    ChatColor.RED + "The channel " + ChatColor.YELLOW + channel + ChatColor.RED +
-                                            " is not a valid channel name!");
+                                    ChatColor.YELLOW + "You have joined the " + ChatColor.GREEN + "Moderator " +
+                                            ChatColor.YELLOW + "channel.");
+                            playerChannel.put(player.getName(), "staff");
 
                         }
-                    }
-                } else if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
+                    } else if (channel.equalsIgnoreCase("supporter") || channel.equalsIgnoreCase("s")) {
 
+                        if (player.hasPermission("obam.ult4") || player.hasPermission("obam.plus2") ||
+                                player.hasPermission("obam.supp1") || player.hasPermission("obam.supporter")) {
 
-                    if (args.length < 2) {
-
-                        player.sendMessage(ChatColor.RED + "You must specify a channel name!");
-
-                    } else {
-
-                        String channel = args[1];
-
-                        if (channel.equalsIgnoreCase("moderator") || channel.equalsIgnoreCase("m") ||
-                                channel.equalsIgnoreCase("staff")) {
-
-                            if (!player.hasPermission("obam.mod")) {
-
-                                player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
-
-                            } else {
-
-                                player.sendMessage(ChatColor.RED + "You can not leave the staff channel silly!");
-
-                            }
-                        } else if (channel.equalsIgnoreCase("supporter") || channel.equalsIgnoreCase("s")) {
-
-                            if (player.hasPermission("obam.ult4") || player.hasPermission("obam.plus2") ||
-                                    player.hasPermission("obam.supp1") || player.hasPermission("obam.supporter")) {
-
-                                ChatInteract.removeFromChannel("supporter", player);
-                                player.sendMessage(
-                                        ChatColor.YELLOW + "You have left the " + ChatColor.BLUE + "Supporter " +
-                                                ChatColor.YELLOW + "channel");
-                                playerChannel.put(player.getName(), "global");
-
-                            } else {
-
-                                player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
-
-                            }
-                        } else if (channel.equalsIgnoreCase("mechanic") || channel.equalsIgnoreCase("mech")) {
-
-                            if (player.hasPermission("obam.mechanic")) {
-
-                                ChatInteract.removeFromChannel("mechanic", player);
-                                player.sendMessage(
-                                        ChatColor.YELLOW + "You have left the " + ChatColor.GOLD + "Mechanic " +
-                                                ChatColor.YELLOW + "channel.");
-                                playerChannel.put(player.getName(), "global");
-
-                            } else {
-
-                                player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
-
-                            }
-
-                        } else if (channel.equalsIgnoreCase("global") || channel.equalsIgnoreCase("g")) {
-
-                            ChatInteract.removeFromChannel("global", player);
+                            ChatInteract.addToChannel("supporter", player);
                             player.sendMessage(
-                                    ChatColor.YELLOW + "You have left the " + ChatColor.WHITE + "Global " +
-                                            ChatColor.YELLOW + "channel.");
-                            playerChannel.put(player.getName(), "none");
+                                    ChatColor.YELLOW + "You have joined the " + ChatColor.BLUE + "Supporter " +
+                                            ChatColor.YELLOW + "channel");
+                            playerChannel.put(player.getName(), "supporter");
 
                         } else {
 
-                            player.sendMessage(
-                                    ChatColor.RED + "The channel " + ChatColor.YELLOW + channel + ChatColor.RED +
-                                            " is not a valid channel name!");
+                            player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
 
                         }
-                    }
+                    } else if (channel.equalsIgnoreCase("mechanic") || channel.equalsIgnoreCase("mech")) {
 
-                } else if (args[0].equalsIgnoreCase("config")) {
+                        if (player.hasPermission("obam.mechanic")) {
 
-                    if (args.length < 2) {
-
-                        if (player.hasPermission("obam.mod")) {
-                            player.sendMessage(ChatColor.GOLD + "SmooChat Configuration");
-                            player.sendMessage(ChatColor.GOLD + "Server Prefix: " + serverPrefix);
-                            player.sendMessage(ChatColor.GOLD + "Server Name: " + ChatColor.YELLOW + serverName);
-
+                            ChatInteract.addToChannel("mechanic", player);
+                            player.sendMessage(
+                                    ChatColor.YELLOW + "You have joined the " + ChatColor.GOLD + "Mechanic " +
+                                            ChatColor.YELLOW + "channel.");
+                            playerChannel.put(player.getName(), "mechanic");
 
                         } else {
 
@@ -607,62 +526,165 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                         }
 
-                    } else if (args[1].equalsIgnoreCase("reload")) {
+                    } else if (channel.equalsIgnoreCase("global") || channel.equalsIgnoreCase("g")) {
 
+                        ChatInteract.addToChannel("global", player);
+                        player.sendMessage(
+                                ChatColor.YELLOW + "You have joined the " + ChatColor.WHITE + "Global " +
+                                        ChatColor.YELLOW + "channel.");
+                        playerChannel.put(player.getName(), "global");
 
-                        if (player.hasPermission("obam.admin")) {
-                            this.reloadConfig();
-
-                            serverPrefix = this.getConfig().getString("settings.prefix");
-                            serverPrefix = ChatColor.translateAlternateColorCodes('&', serverPrefix);
-
-
-                            serverName = this.getConfig().getString("settings.server");
-
-
-                            player.sendMessage(ChatColor.GREEN + "SmooChat Configuration reloaded");
-                        }
                     } else {
 
-                        return false;
+                        player.sendMessage(
+                                ChatColor.RED + "The channel " + ChatColor.YELLOW + channel + ChatColor.RED +
+                                        " is not a valid channel name!");
+
+                    }
+                }
+            } else if (args[0].equalsIgnoreCase("leave") || args[0].equalsIgnoreCase("l")) {
+
+
+                if (args.length < 2) {
+
+                    player.sendMessage(ChatColor.RED + "You must specify a channel name!");
+
+                } else {
+
+                    String channel = args[1];
+
+                    if (channel.equalsIgnoreCase("moderator") || channel.equalsIgnoreCase("m") ||
+                            channel.equalsIgnoreCase("staff")) {
+
+                        if (!player.hasPermission("obam.mod")) {
+
+                            player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+
+                        } else {
+
+                            player.sendMessage(ChatColor.RED + "You can not leave the staff channel silly!");
+
+                        }
+                    } else if (channel.equalsIgnoreCase("supporter") || channel.equalsIgnoreCase("s")) {
+
+                        if (player.hasPermission("obam.ult4") || player.hasPermission("obam.plus2") ||
+                                player.hasPermission("obam.supp1") || player.hasPermission("obam.supporter")) {
+
+                            ChatInteract.removeFromChannel("supporter", player);
+                            player.sendMessage(
+                                    ChatColor.YELLOW + "You have left the " + ChatColor.BLUE + "Supporter " +
+                                            ChatColor.YELLOW + "channel");
+                            playerChannel.put(player.getName(), "global");
+
+                        } else {
+
+                            player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+
+                        }
+                    } else if (channel.equalsIgnoreCase("mechanic") || channel.equalsIgnoreCase("mech")) {
+
+                        if (player.hasPermission("obam.mechanic")) {
+
+                            ChatInteract.removeFromChannel("mechanic", player);
+                            player.sendMessage(
+                                    ChatColor.YELLOW + "You have left the " + ChatColor.GOLD + "Mechanic " +
+                                            ChatColor.YELLOW + "channel.");
+                            playerChannel.put(player.getName(), "global");
+
+                        } else {
+
+                            player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+
+                        }
+
+                    } else if (channel.equalsIgnoreCase("global") || channel.equalsIgnoreCase("g")) {
+
+                        ChatInteract.removeFromChannel("global", player);
+                        player.sendMessage(
+                                ChatColor.YELLOW + "You have left the " + ChatColor.WHITE + "Global " +
+                                        ChatColor.YELLOW + "channel.");
+                        playerChannel.put(player.getName(), "none");
+
+                    } else {
+
+                        player.sendMessage(
+                                ChatColor.RED + "The channel " + ChatColor.YELLOW + channel + ChatColor.RED +
+                                        " is not a valid channel name!");
+
+                    }
+                }
+
+            } else if (args[0].equalsIgnoreCase("config")) {
+
+                if (args.length < 2) {
+
+                    if (player.hasPermission("obam.mod")) {
+                        player.sendMessage(ChatColor.GOLD + "SmooChat Configuration");
+                        player.sendMessage(ChatColor.GOLD + "Server Prefix: " + serverPrefix);
+                        player.sendMessage(ChatColor.GOLD + "Server Name: " + ChatColor.YELLOW + serverName);
+
+
+                    } else {
+
+                        player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+
                     }
 
-                } else if (args[0].equalsIgnoreCase("off")) {
-
-                    ChatInteract.chatOffPlayer(player);
-                    player.sendMessage(ChatColor.RED + "You have turned off chat, to turn back on just use the " +
-                            ChatColor.YELLOW + "/chat on " + ChatColor.RED + "command.");
+                } else if (args[1].equalsIgnoreCase("reload")) {
 
 
-                } else if (args[0].equalsIgnoreCase("on")) {
+                    if (player.hasPermission("obam.admin")) {
+                        this.reloadConfig();
 
-                    ChatInteract.chatOnPlayer(player);
-                    player.sendMessage(
-                            ChatColor.GREEN + "You have turned chat on! To turn it back off just use the " +
-                                    ChatColor.YELLOW + "/chat off " + ChatColor.GREEN + "command.");
+                        serverPrefix = this.getConfig().getString("settings.prefix");
+                        serverPrefix = ChatColor.translateAlternateColorCodes('&', serverPrefix);
+                        ChatInteract.updateSSList();
+                        ChatInteract.updateAdminList();
 
+
+                        serverName = this.getConfig().getString("settings.server");
+
+
+                        player.sendMessage(ChatColor.GREEN + "SmooChat Configuration reloaded");
+                    }
                 } else {
 
                     return false;
                 }
 
+            } else if (args[0].equalsIgnoreCase("off")) {
+
+                ChatInteract.chatOffPlayer(player);
+                player.sendMessage(ChatColor.RED + "You have turned off chat, to turn back on just use the " +
+                        ChatColor.YELLOW + "/chat on " + ChatColor.RED + "command.");
+
+
+            } else if (args[0].equalsIgnoreCase("on")) {
+
+                ChatInteract.chatOnPlayer(player);
+                player.sendMessage(
+                        ChatColor.GREEN + "You have turned chat on! To turn it back off just use the " +
+                                ChatColor.YELLOW + "/chat off " + ChatColor.GREEN + "command.");
+
             } else {
 
-                sender.sendMessage(ChatColor.RED + "You must be a player to execute these commands!");
-
+                return false;
             }
+
+        } else {
+
+            sender.sendMessage(ChatColor.RED + "You must be a player to execute these commands!");
+
         }
+
+        return false;
+    }
         /*
          * TODO Add command values
 		 * 
 		 * TODO Add bungee checks for available players in other servers, use this for checking if a 
 		 * Private message can be found it's receiver on another server
 		 */
-
-        sender.sendMessage("Only a player can execute that command!");
-        return true;
-
-    }
 
 
     @EventHandler
@@ -701,7 +723,7 @@ public class SmooChat extends JavaPlugin implements Listener {
         String channel = playerChannel.get(player.getName());
 
 		/*
-		  Canceling the event to prevent duplicate messages
+          Canceling the event to prevent duplicate messages
 		  I choose to cancel the event instead of formatting the message so I can have a little bit more control
 		  over the display
 		*/
@@ -715,8 +737,7 @@ public class SmooChat extends JavaPlugin implements Listener {
 
             ChatSend.sendPM(player, message);
 
-        }
-        if (channel.equalsIgnoreCase("global")) {
+        } else if (channel.equalsIgnoreCase("global")) {
 
             ChatSend.sendGlobal(player, message);
 

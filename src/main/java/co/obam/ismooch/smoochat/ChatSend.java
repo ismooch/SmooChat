@@ -6,6 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
 
 public class ChatSend {
 
@@ -37,7 +39,18 @@ public class ChatSend {
 		 * made using Prepared statements, with easy administration to adding new
 		 * badges
 		 */
-        if (player.hasPermission("obam.mod")) {
+
+        List<UUID> adminList = ChatInteract.adminList;
+        List<UUID> ssList = ChatInteract.ssList;
+        if (adminList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.LIGHT_PURPLE + "[A] " + player.getName());
+
+        } else if (ssList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GREEN + "[╪] " + player.getName());
+
+        } else if (player.hasPermission("obam.mod")) {
 
             //TODO SQL system for saving SuperStaff and Admin and adding reference in these checks
 
@@ -72,15 +85,15 @@ public class ChatSend {
         } else {
 
             //if no other perms are found just adding the server prefix to the beginning of the user name
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.WHITE + player.getName());
 
         }
         //appending the actual message to the prefix and preparing for sending
 
-        if (Badges.Badges.containsKey(player.getUniqueId())) {
+        if (Badges.Badges.containsKey(player.getUniqueId()) && Badges.Badges.get(player.getUniqueId()) != null) {
             String badge =
                     ChatColor.translateAlternateColorCodes('&', Badges.badgeMap.get(Badges.Badges.get(player.getUniqueId())));
-            sendMessage = String.valueOf(prefix + badge + ChatColor.WHITE + ": " + message);
+            sendMessage = String.valueOf(prefix + " " + badge + ChatColor.WHITE + ": " + message);
 
         } else {
 
@@ -125,7 +138,8 @@ public class ChatSend {
                         target + ": " + ChatColor.GRAY + message + ChatColor.BOLD +
                         ChatColor.DARK_PURPLE + " ❞");
 
-        ChatLogger.logPM(player.getUniqueId(), ObamAPI.getUUID(target), SmooChat.serverName, message);
+        ChatLogger.logPM(player.getUniqueId(), ObamAPI.getUUID(target).toString(), SmooChat.serverName, message);
+        player.sendRawMessage(sendMessage);
         if (Bukkit.getPlayer(target) != null) {
 
             Bukkit.getPlayer(target).sendRawMessage(sendMessage);
@@ -142,8 +156,18 @@ public class ChatSend {
 
         String prefix;
         String sendMessage;
+        List<UUID> adminList = ChatInteract.adminList;
+        List<UUID> ssList = ChatInteract.ssList;
 
-        if (player.hasPermission("obam.mod")) {
+        if (adminList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.LIGHT_PURPLE + "[A] " + player.getName());
+
+        } else if (ssList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GREEN + "[╪] " + player.getName());
+
+        } else if (player.hasPermission("obam.mod")) {
 
             prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.DARK_GREEN + "[M] " + player.getName());
 
@@ -166,14 +190,14 @@ public class ChatSend {
 
         } else {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.WHITE + player.getName());
 
         }
 
-        if (Badges.Badges.containsKey(player.getUniqueId())) {
+        if (Badges.Badges.containsKey(player.getUniqueId()) && Badges.Badges.get(player.getUniqueId()) != null) {
             String badge =
                     ChatColor.translateAlternateColorCodes('&', Badges.badgeMap.get(Badges.Badges.get(player.getUniqueId())));
-            sendMessage = String.valueOf(prefix + badge + ChatColor.LIGHT_PURPLE + ": " + message);
+            sendMessage = String.valueOf(prefix + " " + badge + ChatColor.LIGHT_PURPLE + ": " + message);
 
         } else {
 
@@ -196,8 +220,18 @@ public class ChatSend {
 
         String prefix;
         String sendMessage;
+        List<UUID> adminList = ChatInteract.adminList;
+        List<UUID> ssList = ChatInteract.ssList;
 
-        if (player.hasPermission("obam.mod")) {
+        if (adminList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.LIGHT_PURPLE + "[A] " + player.getName());
+
+        } else if (ssList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GREEN + "[╪] " + player.getName());
+
+        } else if (player.hasPermission("obam.mod")) {
 
             prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.DARK_GREEN + "[M] " + player.getName());
 
@@ -220,14 +254,14 @@ public class ChatSend {
 
         } else {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.WHITE + player.getName());
 
         }
 
-        if (Badges.Badges.containsKey(player.getUniqueId())) {
+        if (Badges.Badges.containsKey(player.getUniqueId()) && Badges.Badges.get(player.getUniqueId()) != null) {
             String badge =
                     ChatColor.translateAlternateColorCodes('&', Badges.badgeMap.get(Badges.Badges.get(player.getUniqueId())));
-            sendMessage = String.valueOf(prefix + badge + ChatColor.BLUE + ": " + message);
+            sendMessage = String.valueOf(prefix + " " + badge + ChatColor.BLUE + ": " + message);
 
         } else {
 
@@ -263,8 +297,18 @@ public class ChatSend {
 
         String prefix;
         String sendMessage;
+        List<UUID> adminList = ChatInteract.adminList;
+        List<UUID> ssList = ChatInteract.ssList;
 
-        if (player.hasPermission("obam.mod")) {
+        if (adminList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.LIGHT_PURPLE + "[A] " + player.getName());
+
+        } else if (ssList.contains(player.getUniqueId())) {
+
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GREEN + "[╪] " + player.getName());
+
+        } else if (player.hasPermission("obam.mod")) {
 
             prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.DARK_GREEN + "[M] " + player.getName());
 
@@ -287,14 +331,14 @@ public class ChatSend {
 
         } else {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.WHITE + player.getName());
 
         }
 
-        if (Badges.Badges.containsKey(player.getUniqueId())) {
+        if (Badges.Badges.containsKey(player.getUniqueId()) && Badges.Badges.get(player.getUniqueId()) != null) {
             String badge =
                     ChatColor.translateAlternateColorCodes('&', Badges.badgeMap.get(Badges.Badges.get(player.getUniqueId())));
-            sendMessage = String.valueOf(prefix + badge + ChatColor.YELLOW + ": " + message);
+            sendMessage = String.valueOf(prefix + " " + badge + ChatColor.YELLOW + ": " + message);
 
         } else {
 

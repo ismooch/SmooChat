@@ -33,16 +33,16 @@ public class ChatLogger {
 
     }
 
-    public static void logPM(UUID sender, UUID receiver, String server, String message) {
+    public static void logPM(UUID sender, String receiver, String server, String message) {
 
         ObamAPI.openConnection();
 
         try {
-
+            System.out.println(sender + " " + receiver + " " + server);
             PreparedStatement sql =
-                    ObamAPI.connection.prepareStatement("INSERT INTO Chat_PM (UUID, To, Message, Server, Time) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)");
+                    ObamAPI.connection.prepareStatement("INSERT INTO Chat_PM (`UUID` , `To` , `Message` , `Server` , `Time`) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)");
             sql.setString(1, sender.toString());
-            sql.setString(2, receiver.toString());
+            sql.setString(2, receiver);
             sql.setString(3, message);
             sql.setString(4, server);
             sql.executeUpdate();

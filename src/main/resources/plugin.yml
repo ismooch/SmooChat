@@ -1,0 +1,18 @@
+name: SmooChat
+main: co.obam.ismooch.smoochat.SmooChat
+version: 3.0
+author: iSmooch
+
+
+commands:
+  chat:
+    description: Execute chat commands.
+    usage: /<command> [help|join|leave|channel] [page|channel]
+    aliases: [c, ch]
+  tell:
+    description: Send a PM
+    usage: /<command> <player> [<message>]
+    aliases: [pm, private, msg]
+  badge:
+    description: Access the badge list
+    usage: /<command>

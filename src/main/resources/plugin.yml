@@ -2,8 +2,6 @@ name: SmooChat
 main: co.obam.ismooch.smoochat.SmooChat
 version: 3.0
 author: iSmooch
-
-
 commands:
   chat:
     description: Execute chat commands.

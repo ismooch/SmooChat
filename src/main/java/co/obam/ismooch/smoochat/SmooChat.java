@@ -409,6 +409,7 @@ public class SmooChat extends JavaPlugin implements Listener {
                     player.sendMessage(ChatColor.GOLD + "/chat <channel name>");
                     player.sendMessage(ChatColor.WHITE + "Sets current active channel to specified channel");
                     player.sendMessage("");
+                    return true;
 
 
                 } else if (args[1].equalsIgnoreCase("2")) {
@@ -431,11 +432,13 @@ public class SmooChat extends JavaPlugin implements Listener {
                     player.sendMessage(
                             ChatColor.WHITE + "Sends a single message to the last person to send a PM to you.");
                     player.sendMessage("");
+                    return true;
 
 
                 } else {
 
                     player.sendMessage(ChatColor.RED + "There are no other help pages!");
+                    return true;
 
                 }
 
@@ -447,12 +450,16 @@ public class SmooChat extends JavaPlugin implements Listener {
                         ChatColor.YELLOW + "You are now talking in the " + ChatColor.GREEN + "Moderator" +
                                 ChatColor.YELLOW + " channel.");
 
+                return true;
+
             } else if (args[0].equalsIgnoreCase("supporter") || args[0].equalsIgnoreCase("s")) {
 
                 playerChannel.put(player.getName(), "supporter");
                 player.sendMessage(
-                        ChatColor.YELLOW + "You are now talking in the " + ChatColor.BLUE + "Supporter " +
+                        ChatColor.YELLOW + "You are now talking in the " + ChatColor.DARK_AQUA + "Supporter " +
                                 ChatColor.YELLOW + "channel.");
+
+                return true;
 
             } else if (args[0].equalsIgnoreCase("mech") || args[0].equalsIgnoreCase("mechanic")) {
 
@@ -460,6 +467,7 @@ public class SmooChat extends JavaPlugin implements Listener {
                 player.sendMessage(
                         ChatColor.YELLOW + "You are now talking in the " + ChatColor.GOLD + "Mechanic " +
                                 ChatColor.YELLOW + "channel.");
+                return true;
 
             } else if (args[0].equalsIgnoreCase("global") || args[0].equalsIgnoreCase("g")) {
 
@@ -468,11 +476,14 @@ public class SmooChat extends JavaPlugin implements Listener {
                         ChatColor.YELLOW + "You are now talking in the " + ChatColor.WHITE + "Global " +
                                 ChatColor.YELLOW + "channel.");
 
+                return true;
+
             } else if (args[0].equalsIgnoreCase("join") || args[0].equalsIgnoreCase("j")) {
 
                 if (args.length < 2) {
 
                     player.sendMessage(ChatColor.RED + "You must specify a channel name!");
+                    return true;
 
                 } else {
 
@@ -484,6 +495,7 @@ public class SmooChat extends JavaPlugin implements Listener {
                         if (!player.hasPermission("obam.mod")) {
 
                             player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                            return true;
 
                         } else {
 
@@ -492,6 +504,7 @@ public class SmooChat extends JavaPlugin implements Listener {
                                     ChatColor.YELLOW + "You have joined the " + ChatColor.GREEN + "Moderator " +
                                             ChatColor.YELLOW + "channel.");
                             playerChannel.put(player.getName(), "staff");
+                            return true;
 
                         }
                     } else if (channel.equalsIgnoreCase("supporter") || channel.equalsIgnoreCase("s")) {
@@ -501,13 +514,15 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                             ChatInteract.addToChannel("supporter", player);
                             player.sendMessage(
-                                    ChatColor.YELLOW + "You have joined the " + ChatColor.BLUE + "Supporter " +
+                                    ChatColor.YELLOW + "You have joined the " + ChatColor.DARK_AQUA + "Supporter " +
                                             ChatColor.YELLOW + "channel");
                             playerChannel.put(player.getName(), "supporter");
+                            return true;
 
                         } else {
 
                             player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                            return true;
 
                         }
                     } else if (channel.equalsIgnoreCase("mechanic") || channel.equalsIgnoreCase("mech")) {
@@ -519,10 +534,12 @@ public class SmooChat extends JavaPlugin implements Listener {
                                     ChatColor.YELLOW + "You have joined the " + ChatColor.GOLD + "Mechanic " +
                                             ChatColor.YELLOW + "channel.");
                             playerChannel.put(player.getName(), "mechanic");
+                            return true;
 
                         } else {
 
                             player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                            return true;
 
                         }
 
@@ -533,12 +550,14 @@ public class SmooChat extends JavaPlugin implements Listener {
                                 ChatColor.YELLOW + "You have joined the " + ChatColor.WHITE + "Global " +
                                         ChatColor.YELLOW + "channel.");
                         playerChannel.put(player.getName(), "global");
+                        return true;
 
                     } else {
 
                         player.sendMessage(
                                 ChatColor.RED + "The channel " + ChatColor.YELLOW + channel + ChatColor.RED +
                                         " is not a valid channel name!");
+                        return true;
 
                     }
                 }
@@ -548,6 +567,7 @@ public class SmooChat extends JavaPlugin implements Listener {
                 if (args.length < 2) {
 
                     player.sendMessage(ChatColor.RED + "You must specify a channel name!");
+                    return true;
 
                 } else {
 
@@ -559,10 +579,12 @@ public class SmooChat extends JavaPlugin implements Listener {
                         if (!player.hasPermission("obam.mod")) {
 
                             player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                            return true;
 
                         } else {
 
                             player.sendMessage(ChatColor.RED + "You can not leave the staff channel silly!");
+                            return true;
 
                         }
                     } else if (channel.equalsIgnoreCase("supporter") || channel.equalsIgnoreCase("s")) {
@@ -572,13 +594,15 @@ public class SmooChat extends JavaPlugin implements Listener {
 
                             ChatInteract.removeFromChannel("supporter", player);
                             player.sendMessage(
-                                    ChatColor.YELLOW + "You have left the " + ChatColor.BLUE + "Supporter " +
+                                    ChatColor.YELLOW + "You have left the " + ChatColor.DARK_AQUA + "Supporter " +
                                             ChatColor.YELLOW + "channel");
                             playerChannel.put(player.getName(), "global");
+                            return true;
 
                         } else {
 
                             player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                            return true;
 
                         }
                     } else if (channel.equalsIgnoreCase("mechanic") || channel.equalsIgnoreCase("mech")) {
@@ -590,10 +614,12 @@ public class SmooChat extends JavaPlugin implements Listener {
                                     ChatColor.YELLOW + "You have left the " + ChatColor.GOLD + "Mechanic " +
                                             ChatColor.YELLOW + "channel.");
                             playerChannel.put(player.getName(), "global");
+                            return true;
 
                         } else {
 
                             player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                            return true;
 
                         }
 
@@ -605,11 +631,15 @@ public class SmooChat extends JavaPlugin implements Listener {
                                         ChatColor.YELLOW + "channel.");
                         playerChannel.put(player.getName(), "none");
 
+                        return true;
+
                     } else {
 
                         player.sendMessage(
                                 ChatColor.RED + "The channel " + ChatColor.YELLOW + channel + ChatColor.RED +
                                         " is not a valid channel name!");
+
+                        return true;
 
                     }
                 }
@@ -622,11 +652,13 @@ public class SmooChat extends JavaPlugin implements Listener {
                         player.sendMessage(ChatColor.GOLD + "SmooChat Configuration");
                         player.sendMessage(ChatColor.GOLD + "Server Prefix: " + serverPrefix);
                         player.sendMessage(ChatColor.GOLD + "Server Name: " + ChatColor.YELLOW + serverName);
+                        return true;
 
 
                     } else {
 
                         player.sendMessage(ChatColor.RED + "You do not have permission to do this!");
+                        return true;
 
                     }
 
@@ -646,6 +678,8 @@ public class SmooChat extends JavaPlugin implements Listener {
 
 
                         player.sendMessage(ChatColor.GREEN + "SmooChat Configuration reloaded");
+
+                        return true;
                     }
                 } else {
 
@@ -658,6 +692,8 @@ public class SmooChat extends JavaPlugin implements Listener {
                 player.sendMessage(ChatColor.RED + "You have turned off chat, to turn back on just use the " +
                         ChatColor.YELLOW + "/chat on " + ChatColor.RED + "command.");
 
+                return true;
+
 
             } else if (args[0].equalsIgnoreCase("on")) {
 
@@ -665,6 +701,8 @@ public class SmooChat extends JavaPlugin implements Listener {
                 player.sendMessage(
                         ChatColor.GREEN + "You have turned chat on! To turn it back off just use the " +
                                 ChatColor.YELLOW + "/chat off " + ChatColor.GREEN + "command.");
+
+                return true;
 
             } else {
 

@@ -74,13 +74,8 @@ public class ChatSend {
         } else if (player.hasPermission("obam.supp1")) {
 
             //Supporter perm check and Blue color addition with no title
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.BLUE + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GRAY + player.getName());
 
-        } else if (player.hasPermission("obam.supporter")) {
-
-            //'obam.supporter' is a legacy permission only in use by the mechanic group
-            //Mechanic perm check with Yellow color addition and no title
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.YELLOW + player.getName());
 
         } else {
 
@@ -182,11 +177,8 @@ public class ChatSend {
 
         } else if (player.hasPermission("obam.supp1")) {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.BLUE + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GRAY + player.getName());
 
-        } else if (player.hasPermission("obam.supporter")) {
-
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.YELLOW + player.getName());
 
         } else {
 
@@ -246,11 +238,8 @@ public class ChatSend {
 
         } else if (player.hasPermission("obam.supp1")) {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.BLUE + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GRAY + player.getName());
 
-        } else if (player.hasPermission("obam.supporter")) {
-
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.YELLOW + player.getName());
 
         } else {
 
@@ -323,11 +312,7 @@ public class ChatSend {
 
         } else if (player.hasPermission("obam.supp1")) {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.BLUE + player.getName());
-
-        } else if (player.hasPermission("obam.supporter")) {
-
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.YELLOW + player.getName());
+            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GRAY + player.getName());
 
         } else {
 

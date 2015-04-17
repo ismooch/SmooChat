@@ -6,7 +6,7 @@
 
     <groupId>co.obam.ismooch</groupId>
     <artifactId>SmooChat</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0</version>
 
     <dependencies>
         <dependency>

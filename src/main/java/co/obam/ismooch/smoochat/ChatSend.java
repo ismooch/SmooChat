@@ -23,17 +23,14 @@ public class ChatSend {
 
         //declaring the prefix and sendMessage strings.
         //they  are separate here so I can modify them separately.
-        //prefix will handle Server Prefix, Title, Player Name and TODO Badges
+        //prefix will handle Server Prefix, Title, Player Name and Badges
         String prefix;
         String sendMessage;
 
         //all of the permission checks which simply apply the proper title
         //not all of these colors may be right.. or subject to change
         /*
-         * TODO Add badges / add some columns for setting badge type and
-		 * color vs just beta star color to support multiple different badges
-		 * 
-		 * TODO When adding badges, attempt to add JSON Hover Event support for
+		 * TODO attempt to add JSON Hover Event support for
 		 * information about the badge
 		 * May require an additional SQL column for the information. But should be 
 		 * made using Prepared statements, with easy administration to adding new
@@ -167,22 +164,12 @@ public class ChatSend {
             prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.DARK_GREEN + "[M] " + player.getName());
 
 
-        } else if (player.hasPermission("obam.ult4")) {
-
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GOLD + "[^] " + player.getName());
-
-        } else if (player.hasPermission("obam.plus2")) {
-
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.AQUA + "[+] " + player.getName());
-
-        } else if (player.hasPermission("obam.supp1")) {
-
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.GRAY + player.getName());
-
-
         } else {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.WHITE + player.getName());
+            ChatInteract.removeFromChannel("supporter", player);
+            sendGlobal(player , message);
+            SmooChat.playerChannel.put(player.getName(), "global");
+            return;
 
         }
 
@@ -243,14 +230,17 @@ public class ChatSend {
 
         } else {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.WHITE + player.getName());
+            ChatInteract.removeFromChannel("supporter", player);
+            sendGlobal(player , message);
+            SmooChat.playerChannel.put(player.getName(), "global");
+            return;
 
         }
 
         if (Badges.Badges.containsKey(player.getUniqueId()) && Badges.Badges.get(player.getUniqueId()) != null) {
             String badge =
                     ChatColor.translateAlternateColorCodes('&', Badges.badgeMap.get(Badges.Badges.get(player.getUniqueId())));
-            sendMessage = String.valueOf(prefix + " " + badge + ChatColor.BLUE + ": " + message);
+            sendMessage = String.valueOf(prefix + " " + badge + ChatColor.DARK_AQUA + ": " + message);
 
         } else {
 
@@ -316,7 +306,10 @@ public class ChatSend {
 
         } else {
 
-            prefix = String.valueOf(SmooChat.serverPrefix + " " + ChatColor.WHITE + player.getName());
+            ChatInteract.removeFromChannel("supporter", player);
+            sendGlobal(player , message);
+            SmooChat.playerChannel.put(player.getName(), "global");
+            return;
 
         }
 

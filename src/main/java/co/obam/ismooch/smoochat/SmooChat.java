@@ -36,7 +36,7 @@ public class SmooChat extends JavaPlugin implements Listener {
     public static String serverName;
 
     //setting up the string HashMap that determines what channel each player is currently chatting in
-    public HashMap<String, String> playerChannel = new HashMap<String, String>();
+    public static HashMap<String, String> playerChannel = new HashMap<String, String>();
 
 
     public void onEnable() {
@@ -696,6 +696,19 @@ public class SmooChat extends JavaPlugin implements Listener {
 
         //sets player default channel to global
         playerChannel.put(e.getPlayer().getName(), "global");
+
+        if(e.getPlayer().hasPermission("obam.mod") || e.getPlayer().hasPermission("obam.smod")){
+
+            ChatInteract.addToChannel("staff", e.getPlayer());
+
+        }
+
+        if(e.getPlayer().hasPermission("obam.supporter")){
+
+
+            ChatInteract.addToChannel("supporter", e.getPlayer());
+
+        }
 
     }
 

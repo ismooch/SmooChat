@@ -192,6 +192,8 @@ public class ChatSend {
             get.sendRawMessage(sendMessage);
         }
 
+        ChatLogger.logChat(player.getUniqueId(), "Staff", SmooChat.serverName, message);
+
 
     }
 
@@ -269,6 +271,7 @@ public class ChatSend {
 
             }
         }
+        ChatLogger.logChat(player.getUniqueId(), "Supporter", SmooChat.serverName, message);
 
     }
 
@@ -325,6 +328,7 @@ public class ChatSend {
         }
 
 
+
         System.out.println(sendMessage);
         BungeeMessenger.sendCSChat("mechanic", sendMessage);
 
@@ -345,6 +349,7 @@ public class ChatSend {
 
             }
         }
+        ChatLogger.logChat(player.getUniqueId(), "Mechanic", SmooChat.serverName, message);
 
     }
 

@@ -5,6 +5,8 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -112,21 +114,70 @@ public class BungeeMessenger implements PluginMessageListener {
             if (group != null && group.equals("staff")) {
 
                 for (Player get : ChatInteract.staffChannel) {
-                    get.sendRawMessage(sendMessage);
+
+                    if(sendMessage.contains(get.getDisplayName())){
+
+
+                        String alert = sendMessage.replace(get.getDisplayName(),
+                                ChatColor.RED + get.getDisplayName() + ChatColor.LIGHT_PURPLE);
+                        get.sendRawMessage(alert);
+                        get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+
+
+
+
+
+                    }else{
+
+                        get.sendRawMessage(sendMessage);
+
+                    }
                 }
 
             } else if (group != null && group.equals("global")) {
 
                 for (Player get : ChatInteract.globalChannel) {
 
-                    get.sendRawMessage(sendMessage);
+                    if(sendMessage.contains(get.getDisplayName())){
+
+
+                            String alert = sendMessage.replace(get.getDisplayName(),
+                                    ChatColor.RED + get.getDisplayName() + ChatColor.WHITE);
+                            get.sendRawMessage(alert);
+                            get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+
+
+
+
+
+                    }else{
+
+                        get.sendRawMessage(sendMessage);
+
+                    }
 
                 }
             } else if (group != null && group.equals("mechanic")) {
 
                 for (Player get : ChatInteract.mechanicChannel) {
 
-                    get.sendRawMessage(sendMessage);
+                    if(sendMessage.contains(get.getDisplayName())){
+
+
+                        String alert = sendMessage.replace(get.getDisplayName(),
+                                ChatColor.RED + get.getDisplayName() + ChatColor.YELLOW);
+                        get.sendRawMessage(alert);
+                        get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+
+
+
+
+
+                    }else{
+
+                        get.sendRawMessage(sendMessage);
+
+                    }
 
                 }
 
@@ -134,7 +185,23 @@ public class BungeeMessenger implements PluginMessageListener {
 
                 for (Player get : ChatInteract.supporterChannel) {
 
-                    get.sendRawMessage(sendMessage);
+                    if(sendMessage.contains(get.getDisplayName())){
+
+
+                        String alert = sendMessage.replace(get.getDisplayName(),
+                                ChatColor.RED + get.getDisplayName() + ChatColor.DARK_AQUA);
+                        get.sendRawMessage(alert);
+                        get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+
+
+
+
+
+                    }else{
+
+                        get.sendRawMessage(sendMessage);
+
+                    }
 
                 }
 

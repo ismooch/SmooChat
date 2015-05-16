@@ -3,6 +3,7 @@ package co.obam.ismooch.smoochat;
 import co.obam.ismooch.obamapi.ObamAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -104,7 +105,24 @@ public class ChatSend {
 
             if (!ChatInteract.chatOffPlayers.contains(get)) {
 
-                get.sendRawMessage(sendMessage);
+                if(sendMessage.contains(get.getDisplayName())){
+                    if(get != player) {
+                        String alert = sendMessage.replace(get.getDisplayName(),
+                                ChatColor.RED + get.getDisplayName() + ChatColor.WHITE);
+                        get.sendRawMessage(alert);
+                        get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+                    }else{
+
+                        get.sendRawMessage(sendMessage);
+
+                    }
+
+                }else{
+
+                    get.sendRawMessage(sendMessage);
+
+                }
+
 
             } else {
 
@@ -189,7 +207,27 @@ public class ChatSend {
 
         for (Player get : ChatInteract.staffChannel) {
 
-            get.sendRawMessage(sendMessage);
+            if(sendMessage.contains(get.getDisplayName())){
+
+                if(get != player) {
+
+                    String alert = sendMessage.replace(get.getDisplayName(),
+                            ChatColor.RED + get.getDisplayName() + ChatColor.LIGHT_PURPLE);
+                    get.sendRawMessage(alert);
+                    get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+
+                }else{
+
+                    get.sendRawMessage(sendMessage);
+
+                }
+
+            }else{
+
+                get.sendRawMessage(sendMessage);
+
+            }
+
         }
 
         ChatLogger.logChat(player.getUniqueId(), "Staff", SmooChat.serverName, message);
@@ -259,7 +297,26 @@ public class ChatSend {
 
             if (!ChatInteract.chatOffPlayers.contains(get)) {
 
-                get.sendRawMessage(sendMessage);
+                if(sendMessage.contains(get.getDisplayName())){
+
+                    if(get != player) {
+
+                        String alert = sendMessage.replace(get.getDisplayName(),
+                                ChatColor.RED + get.getDisplayName() + ChatColor.DARK_AQUA);
+                        get.sendRawMessage(alert);
+                        get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+
+                    }else{
+
+                        get.sendRawMessage(sendMessage);
+
+                    }
+
+                }else{
+
+                    get.sendRawMessage(sendMessage);
+
+                }
 
             } else {
 
@@ -337,7 +394,26 @@ public class ChatSend {
 
             if (!ChatInteract.chatOffPlayers.contains(get)) {
 
-                get.sendRawMessage(sendMessage);
+                if(sendMessage.contains(get.getDisplayName())){
+
+                    if(get != player) {
+
+                        String alert = sendMessage.replace(get.getDisplayName(),
+                                ChatColor.RED + get.getDisplayName() + ChatColor.YELLOW);
+                        get.sendRawMessage(alert);
+                        get.playSound(get.getLocation(), Sound.ORB_PICKUP, 1, 1);
+
+                    }else{
+
+                        get.sendRawMessage(sendMessage);
+
+                    }
+
+                }else{
+
+                    get.sendRawMessage(sendMessage);
+
+                }
 
             } else {
 
